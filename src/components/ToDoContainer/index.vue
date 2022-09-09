@@ -2,7 +2,7 @@
 import ToDoInput from '../ToDoInput/index.vue'
 import ToDoList from '../ToDoList/index.vue'
 import ToDoSearch from '../ToDoSearch/index.vue'
-import { ToDoItemState } from '../../constant'
+import { ToDoItemState } from '@/constant'
 import { ToTopOutlined } from '@ant-design/icons-vue'
 import { ref } from 'vue'
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useStore } from '../../store'
-import { ToDoItemState } from '../../constant'
+import { useStore } from '@/store'
+import { ToDoItemState } from '@/constant'
 const inputValue = ref<string>('')
 
 const store = useStore()

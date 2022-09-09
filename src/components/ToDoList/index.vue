@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { DeleteOutlined } from '@ant-design/icons-vue'
 import { storeToRefs } from 'pinia'
-import { useStore } from '../../store'
+import { useStore } from '@/store'
 import { computed } from 'vue'
-import { ToDoItemState } from '../../constant'
+import { ToDoItemState } from '@/constant'
 
 const store = useStore()
 
@@ -22,7 +22,7 @@ const props = defineProps({
 const dataSource = computed(() => {
   const { status, searchValue } = props
   if (searchValue) {
-    return todoList.value.filter(item => item.status === status && item.content.indexOf(searchValue) > -1)
+    return todoList.value.filter(item => item.status === status && item.content.search(searchValue) !== -1)
   } else {
     return todoList.value.filter(item => item.status === status)
   }
@@ -30,10 +30,10 @@ const dataSource = computed(() => {
 
 /**
  * 处理完成状态变更
- * @param event 
+ * @param _event 
  * @param id 
  */
-const handleChecked = (event: Event, id: number) => {
+const handleChecked = (_event: Event, id: number) => {
   const todoListTemp = todoList.value
   todoListTemp.forEach((item, index) => {
     if (item.id === id) {

@@ -7,7 +7,8 @@ import {
   Checkbox,
   BackTop,
   Divider,
-  Typography
+  Typography,
+  Form
 } from 'ant-design-vue'
 
 export default (app: App<Element>) => {
@@ -18,4 +19,5 @@ export default (app: App<Element>) => {
   .use(BackTop)
   .use(Divider)
   .use(Typography)
+  .use(Form)
 }
