@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useStore } from '@/store'
+import { todoListStore } from '@/store/todoList'
 import { ToDoItemState } from '@/constant'
+
 const inputValue = ref<string>('')
 
-const store = useStore()
+const useTodoListStore = todoListStore()
 
 /**
  * 处理添加事件
  */
 const handleAdd = () => {
   if (inputValue.value) {
-    store.todoList.unshift({
+    useTodoListStore.addTodo({
       id: Math.random(),
       content: inputValue.value,
       status: ToDoItemState.unfinished

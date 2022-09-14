@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watchEffect, onMounted, h } from 'vue'
 import type { Rule } from 'ant-design-vue/es/form'
 import type { FormInstance } from 'ant-design-vue'
 import AnimatedInput from '@/components/AnimatedInput/index.vue'
-import router from '@/router';
+import { userStore } from '@/store/user'
+import { message } from 'ant-design-vue'
+import router from '@/router'
+import { useRoute } from 'vue-router'
+import { notification } from 'ant-design-vue'
+
+const useUserStore = userStore()
 
 interface FormState {
   username: string,
@@ -65,9 +71,55 @@ const rules: Record<string, Rule[]> = {
   ]
 }
 
-const handleLogin = () => {
-  router.push('/')
+let redirect = ref(undefined)
+const otherQuery = ref({})
+const route = useRoute()
+
+const getOtherQuery = (query: object) => {
+  return Object.keys(query).reduce((acc, cur) => {
+    if (cur !== 'redirect') {
+      acc[cur] = query[cur]
+    }
+    return acc
+  }, [])
 }
+
+watchEffect(
+  () => {
+    const query = route.query
+    if (query) {
+      redirect.value = query.redirect
+      otherQuery.value = getOtherQuery(query)
+    }
+  }
+)
+
+const handleLogin = async (formState: FormState) => {
+  const res = await useUserStore.login(formState)
+  const { error, msg } = res
+  if (error !== 0) {
+    message.error(msg)
+  } else {
+    message.success(msg)
+    router.push({ path: redirect.value || '/', query: otherQuery.value })
+    notification.close(key)
+  }
+}
+
+const key = `open${Date.now()}`
+
+onMounted(() => {
+  notification['info']({
+    message: '示例账号密码',
+    duration: null,
+    placement: 'topLeft',
+    description: () => h('div', { class: 'container' }, [
+      h('div', null, '账号：admin'),
+      h('div', null, '密码：123456')
+    ]),
+    key
+  })
+})
 
 </script>
 
@@ -90,11 +142,13 @@ const handleLogin = () => {
           :wrapper-col="{ span: 24 }"
         >
           <animated-input
-            v-model:value="formState.username"
+            v-model="formState.username"
             label="Username"
+            type="text"
             :text-decoration-color="usernameTextDecorationColor"
-            @value-change="handleUsernameChange"
-          />
+            @update:modelValue="handleUsernameChange"
+          >
+          </animated-input>
         </a-form-item>
 
         <a-form-item
@@ -102,12 +156,13 @@ const handleLogin = () => {
           :wrapper-col="{ span: 24 }"
         >
           <animated-input
-            v-model:value="formState.password"
+            v-model="formState.password"
             label="Password"
-            :text-decoration-color="passwordTextDecorationColor"
             type="password"
-            @value-change="handlePasswordChange"
-          />
+            :text-decoration-color="passwordTextDecorationColor"
+            @update:modelValue="handlePasswordChange"
+          >
+          </animated-input>
         </a-form-item>
 
         <a-form-item :wrapper-col="{ span: 6 }">

@@ -4,6 +4,8 @@ import { createPinia } from 'pinia'
 
 import './styles/index.scss'
 
+import './permission'
+
 import installAntDesign from './plugins/ant-design'
 
 import router from './router'

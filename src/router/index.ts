@@ -18,16 +18,4 @@ const router = createRouter({
   routes
 })
 
-// 鉴权
-const isAuthenticated = (): boolean => {
-  return true
-}
-
-router.beforeEach((to, _from, next) => {
-  if (to.path !== '/login' && !isAuthenticated()) {
-    next(`/login?redirect=${to.path}`)
-  }
-  next()
-})
-
 export default router

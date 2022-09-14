@@ -3,3 +3,9 @@ export const enum ToDoItemState {
   done = 1,
   deleted = 2
 }
+
+export interface response {
+  error: number,
+  msg: string,
+  data: object
+}

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { toRefs, ref } from 'vue';
+import { toRefs } from 'vue';
 
 const props = defineProps({
-  value: {
+  modelValue: {
     type: String,
     default: ''
   },
@@ -12,7 +12,10 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: 'text'
+    default: 'text',
+    validator(value: string) {
+      return ['text', 'password'].includes(value)
+    }
   },
   textDecorationColor: {
     type: String,
@@ -20,21 +23,20 @@ const props = defineProps({
   }
 })
 
-const { value, label, type } = toRefs(props)
+const { modelValue, label, type } = toRefs(props)
 
-const valueRef = ref('')
-valueRef.value = value.value
-
-const emit = defineEmits(['valueChange'])
-
-const handleInput = () => {
-  emit('valueChange', valueRef.value)
-}
+defineEmits(['update:modelValue'])
 
 </script>
 
 <template>
-  <input v-model="valueRef" class="outline-none" placeholder=" " :type="type" @input="handleInput" />
+  <input
+    v-model="modelValue"
+    class="outline-none"
+    placeholder=" "
+    :type="type"
+    @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+  />
   <label class="font-bold">{{ label }}</label>
 </template>
 

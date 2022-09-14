@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { DeleteOutlined } from '@ant-design/icons-vue'
 import { storeToRefs } from 'pinia'
-import { useStore } from '@/store'
+import { todoListStore, IToDoItem } from '@/store/todoList'
 import { computed } from 'vue'
 import { ToDoItemState } from '@/constant'
 
-const store = useStore()
+const useTodoListStore = todoListStore()
 
-const { todoList } = storeToRefs(store)
+const { todoList } = storeToRefs(useTodoListStore)
 
 const props = defineProps({
   status: {
@@ -22,9 +22,9 @@ const props = defineProps({
 const dataSource = computed(() => {
   const { status, searchValue } = props
   if (searchValue) {
-    return todoList.value.filter(item => item.status === status && item.content.search(searchValue) !== -1)
+    return todoList.value.filter((item: IToDoItem)  => item.status === status && item.content.search(searchValue) !== -1)
   } else {
-    return todoList.value.filter(item => item.status === status)
+    return todoList.value.filter((item: IToDoItem) => item.status === status)
   }
 })
 
@@ -35,7 +35,7 @@ const dataSource = computed(() => {
  */
 const handleChecked = (_event: Event, id: number) => {
   const todoListTemp = todoList.value
-  todoListTemp.forEach((item, index) => {
+  todoListTemp.forEach((item: IToDoItem, index: number) => {
     if (item.id === id) {
       const status = item.status
       switch (status) {
@@ -60,7 +60,7 @@ const handleChecked = (_event: Event, id: number) => {
  */
 const handleDelete = (id: number) => {
   const todoListTemp = todoList.value
-  todoListTemp.forEach((item, index) => {
+  todoListTemp.forEach((item: IToDoItem, index: number) => {
     if (item.id === id) {
       const status = item.status
       if ([ToDoItemState.done, ToDoItemState.unfinished].includes(status)) {

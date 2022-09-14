@@ -16,6 +16,7 @@ const handleSearchValue = (value: string) => {
 
 <template>
   <div class="w-full flex justify-center app-container">
+
     <!-- 回到顶部 -->
     <a-back-top>
       <div class="fixed flex justify-center items-center back-top-icon">
@@ -35,7 +36,8 @@ const handleSearchValue = (value: string) => {
     </div>
 
     <!-- 悬浮搜索按钮 -->
-    <to-do-search @searchValueChange="handleSearchValue" />
+    <to-do-search @searchValueChange="handleSearchValue"></to-do-search>
+
   </div>
 </template>
 
