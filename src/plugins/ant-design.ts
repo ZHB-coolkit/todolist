@@ -8,7 +8,9 @@ import {
   BackTop,
   Divider,
   Typography,
-  Form
+  Form,
+  Tooltip,
+  Popconfirm
 } from 'ant-design-vue'
 
 export default (app: App<Element>) => {
@@ -20,4 +22,6 @@ export default (app: App<Element>) => {
   .use(Divider)
   .use(Typography)
   .use(Form)
+  .use(Tooltip)
+  .use(Popconfirm)
 }

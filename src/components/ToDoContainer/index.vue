@@ -2,15 +2,8 @@
 import ToDoInput from '../ToDoInput/index.vue'
 import ToDoList from '../ToDoList/index.vue'
 import ToDoSearch from '../ToDoSearch/index.vue'
-import { ToDoItemState } from '@/constant'
+import { EToDoStatus } from '@/ts/enum/ETodo'
 import { ToTopOutlined } from '@ant-design/icons-vue'
-import { ref } from 'vue'
-
-const searchValue = ref('')
-
-const handleSearchValue = (value: string) => {
-  searchValue.value = value
-}
 
 </script>
 
@@ -27,16 +20,16 @@ const handleSearchValue = (value: string) => {
     <!-- todo list 容器 -->
     <div class="todo-list-container">
       <header class="text-center">
-        <h1 class="text-3xl">ToDo List</h1>
+        <h1 class="text-3xl">Todo List</h1>
       </header>
       <to-do-input></to-do-input>
-      <to-do-list class="todo-list" :search-value="searchValue"></to-do-list>
+      <to-do-list class="todo-list"></to-do-list>
       <a-divider>已完成</a-divider>
-      <to-do-list class="todo-list" :search-value="searchValue" :status="ToDoItemState.done"></to-do-list>
+      <to-do-list class="todo-list" :status="EToDoStatus.DONE"></to-do-list>
     </div>
 
     <!-- 悬浮搜索按钮 -->
-    <to-do-search @searchValueChange="handleSearchValue"></to-do-search>
+    <to-do-search></to-do-search>
 
   </div>
 </template>

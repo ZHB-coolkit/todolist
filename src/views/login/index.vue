@@ -12,7 +12,7 @@ import { notification } from 'ant-design-vue'
 const useUserStore = userStore()
 
 interface FormState {
-  username: string,
+  username: string
   password: string
 }
 
@@ -78,49 +78,55 @@ const route = useRoute()
 const getOtherQuery = (query: object) => {
   return Object.keys(query).reduce((acc, cur) => {
     if (cur !== 'redirect') {
+      // @ts-ignore
       acc[cur] = query[cur]
     }
     return acc
   }, [])
 }
 
-watchEffect(
-  () => {
-    const query = route.query
-    if (query) {
-      redirect.value = query.redirect
-      otherQuery.value = getOtherQuery(query)
-    }
+watchEffect(() => {
+  const query = route.query
+  if (query) {
+    redirect.value = query.redirect
+    otherQuery.value = getOtherQuery(query)
   }
-)
+})
+
+const key = `open${Date.now()}`
 
 const handleLogin = async (formState: FormState) => {
-  const res = await useUserStore.login(formState)
-  const { error, msg } = res
-  if (error !== 0) {
+  let res
+  try {
+    res = await useUserStore.login(formState)
+  } catch (error) {
+    console.log('error', error)
+    message.error('error')
+    return
+  }
+  const { code, message: msg } = res
+  if (code !== 0) {
     message.error(msg)
   } else {
-    message.success(msg)
+    message.success('Login Success')
     router.push({ path: redirect.value || '/', query: otherQuery.value })
     notification.close(key)
   }
 }
-
-const key = `open${Date.now()}`
 
 onMounted(() => {
   notification['info']({
     message: '示例账号密码',
     duration: null,
     placement: 'topLeft',
-    description: () => h('div', { class: 'container' }, [
-      h('div', null, '账号：admin'),
-      h('div', null, '密码：123456')
-    ]),
+    description: () =>
+      h('div', { class: 'container' }, [
+        h('div', null, '账号：admin'),
+        h('div', null, '密码：123456')
+      ]),
     key
   })
 })
-
 </script>
 
 <template>
@@ -137,10 +143,7 @@ onMounted(() => {
         class="flex flex-col items-center"
         @finish="handleLogin"
       >
-        <a-form-item
-          name="username"
-          :wrapper-col="{ span: 24 }"
-        >
+        <a-form-item name="username" :wrapper-col="{ span: 24 }">
           <animated-input
             v-model="formState.username"
             label="Username"
@@ -151,10 +154,7 @@ onMounted(() => {
           </animated-input>
         </a-form-item>
 
-        <a-form-item
-          name="password"
-          :wrapper-col="{ span: 24 }"
-        >
+        <a-form-item name="password" :wrapper-col="{ span: 24 }">
           <animated-input
             v-model="formState.password"
             label="Password"
@@ -169,7 +169,6 @@ onMounted(() => {
           <a-button type="primary" html-type="submit" block class="submit-btn">Submit</a-button>
         </a-form-item>
       </a-form>
-
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { toRefs } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -26,12 +26,11 @@ const props = defineProps({
 const { modelValue, label, type } = toRefs(props)
 
 defineEmits(['update:modelValue'])
-
 </script>
 
 <template>
   <input
-    v-model="modelValue"
+    :model-value="modelValue"
     class="outline-none"
     placeholder=" "
     :type="type"
@@ -48,7 +47,7 @@ label {
   font-size: 16px;
   padding: 10px 0;
   pointer-events: none;
-  transition: .5s;
+  transition: 0.5s;
 }
 input {
   width: 100%;
@@ -58,7 +57,8 @@ input {
   background: transparent;
   margin-bottom: 6px;
   padding: 10px 0;
-  &:focus + label,&:not(:placeholder-shown) + label {
+  &:focus + label,
+  &:not(:placeholder-shown) + label {
     transform: translateY(-26px);
     color: #000;
     font-size: 14px;

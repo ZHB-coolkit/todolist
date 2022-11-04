@@ -2,15 +2,13 @@
 import { ref, onUnmounted } from 'vue'
 import { debounce } from 'lodash'
 import { SearchOutlined } from '@ant-design/icons-vue'
+import { todoListEmitter } from '@/utils/emitter'
+import { TODO_LIST_EMITTER } from '@/ts/enum/EEmitter'
 
 const searchValue = ref('')
 
-const emit = defineEmits<{
-  (e: 'searchValueChange', value: string): void
-}>()
-
 const handleSearch = debounce(() => {
-  emit('searchValueChange', searchValue.value)
+  todoListEmitter.emit(TODO_LIST_EMITTER.SEARCH, searchValue.value)
 }, 500, {
   leading: false,
   trailing: true
@@ -19,8 +17,6 @@ const handleSearch = debounce(() => {
 onUnmounted(() => {
   handleSearch.cancel
 })
-
-
 
 </script>
 

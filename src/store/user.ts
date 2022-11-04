@@ -1,6 +1,10 @@
-import storage from '@/utils/storage'
 import { defineStore } from 'pinia'
+
 import Crypto from '@/utils/crypto'
+import storage from '@/utils/storage'
+
+import { login } from '@/api/v1/user'
+
 import { ACCESS_TOKEN } from '@/constant/storage-key'
 
 interface IUserInfo {
@@ -11,34 +15,47 @@ interface IUserInfo {
 export const userStore = defineStore('userStore', {
   state: () => {
     return {
-      token: '',
+      accessToken: '',
       name: ''
     }
   },
   actions: {
-    // 登录
-    login(userInfo: IUserInfo) {
-      return new Promise((resolve, _reject) => {
-        // 代替异步请求
-        const { username, password } = userInfo
-        if (username === 'admin' && Crypto.encrypt(password) === Crypto.encrypt('123456')) {
-          const token = Crypto.encrypt(username)
-          storage.set(ACCESS_TOKEN, token, new Date().getTime() + 24 * 60 * 60 * 1000)
-          this.token = token
-          resolve({
-            error: 0,
-            msg: 'login success!',
-            data: {}
-          })
-        } else {
-          resolve({
-            error: 401,
-            msg: 'username or password is incorrect!',
-            data: {}
-          })
+
+    /**
+     * 登录
+     * @param userInfo 
+     * @returns 
+     */
+    async login(userInfo: IUserInfo) {
+      const { username, password } = userInfo
+      const encryptPassword = Crypto.encrypt(password)
+      let res
+      try {
+        res = await login({ username, password: encryptPassword})
+      } catch (error) {
+        return Promise.reject(error)
+      }
+      const { accessToken } = res.data
+      // @ts-ignore
+      storage.set(ACCESS_TOKEN, accessToken, new Date().getTime() + 24 * 60 * 60 * 1000)
+      this.accessToken = accessToken
+      return Promise.resolve(res)
+    },
+
+    /**
+     * 重置 token
+     * @returns 
+     */
+    resetToken() {
+      return new Promise((resolve, reject) => {
+        try {
+          storage.clearAll()
+          this.accessToken = ''
+          resolve(null)
+        } catch (error) {
+          reject(error)
         }
       })
     }
   }
 })
-
